@@ -7,7 +7,7 @@ import (
 	"credilens-backend/internal/constants"
 )
 
-func ValidateAnalyseInput(inputType string, content string) error {
+func ValidateAnalyzeInput(inputType string, content string) error {
 	if strings.TrimSpace(content) == "" {
 		return errors.New("content cannot be empty")
 	}
