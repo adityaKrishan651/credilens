@@ -1,9 +1,8 @@
 package main
 
 import (
-	"net/http"
-
 	"credilens-backend/internal/handlers"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +22,4 @@ func main() {
 	}
 
 	r.Run(":8080")
-
 }
