@@ -1,10 +1,12 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"credilens-backend/internal/clients"
 	"credilens-backend/internal/config"
 	"credilens-backend/internal/handlers"
 )
@@ -27,6 +29,16 @@ func main() {
 		c.Next()
 	})
 
+	openAIClient, err := clients.NewOpenAIClient(
+		cfg.AzureOpenAIEndpoint,
+		cfg.AzureOpenAIKey,
+		cfg.AzureOpenAIDeploy,
+	)
+
+	if err != nil {
+		log.Println("⚠️ Azure OpenAI not configured, AI features disabled")
+	}
+
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "ok",
@@ -35,7 +47,13 @@ func main() {
 
 	api := r.Group("/api")
 	{
-		api.POST("/analyze", handlers.AnalyzeContent)
+		var aiChatFunc handlers.AIChatFunc
+
+		if openAIClient != nil {
+			aiChatFunc = openAIClient.Chat
+		}
+
+		api.POST("/analyze", handlers.AnalyzeContent(aiChatFunc))
 	}
 
 	r.Run(":" + cfg.ServerPort)
