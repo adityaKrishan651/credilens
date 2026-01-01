@@ -1,8 +1,8 @@
 package models
 
 type AnalyzeRequest struct {
-	Content string `json:"content"`
-	Type    string `json:"type"` // url | text | image (future)
+	Type    string `json:"type" binding:"required,oneof=url dom image text"`
+	Content string `json:"content" binding:"required"`
 }
 
 type AnalyzeResponse struct {
